@@ -49,6 +49,34 @@ $wsoIpLb = "<Appliance Load Balanced IP Address"
 $wsoNetmask = "<Appliance Netmask>"  # Assumes all three appliance in same subnet
 $wsoNetmaskLb = "<Appliance Load Balanced Netmask>"
 
+### DO NOT EDIT BELOW THIS LINE ###
+# Validate PowerShell version is correct
+if ( "Core" -ne $PSVersionTable.PSEdition)
+{
+    Write-Host -ForegroundColor Red "***PowerShell Core not detected.  Please install before continuing"
+    exit
+} else {
+    Write-Host -ForegroundColor Yellow "* PowerShell Core Installed: " $PSVersionTable.PSVersion
+}
+
+# Verify Source OVA exists
+if ( !(Test-Path $wsoSourceOva)) 
+{
+    Write-Host -ForegroundColor Red "***Missing Appliance OVA.  Verify script matches actual file location"
+    exit
+} else {
+    Write-Host -ForegroundColor Yellow "* Appliance OVA Found: $wsoSourceOva"
+}
+
+# Validate key default values changed
+if ( "NEED VALUE" -eq $VIserver -or
+         "NEED VALUE" -eq $VIUsername -or
+         "NEED VALUE" -eq $VIPassword ) 
+{
+    Write-Host -ForegroundColor Red "***Default Values Set.  Unable to Proceed.  Edit Script before continuing***"
+    exit
+}
+
 # Log into the vCenter Server
 Write-Host -ForegroundColor Yellow "Connecting to vCenter..."
 $vcConn = Connect-VIServer $VIserver -User $VIUsername -Password $VIPassword -WarningAction SilentlyContinue
