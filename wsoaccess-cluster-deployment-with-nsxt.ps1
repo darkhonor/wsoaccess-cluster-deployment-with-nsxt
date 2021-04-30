@@ -127,8 +127,14 @@ if ( $null -eq $ds1 )
 
 # Import the first appliance into the vCenter.
 Write-Host -ForegroundColor Yellow "Importing Primary Appliance..."
-Import-VApp -Source $wsoSourceOva -OvfConfiguration $OVFConfig -Name $vmName1 -VMHost $vmhost1 -Location $cluster1 -Datastore $ds1 -Confirm:$false
+$wsoVm = Import-VApp -Source $wsoSourceOva -OvfConfiguration $OVFConfig -Name $vmName1 -VMHost $vmhost1 -Location $cluster1 -Datastore $ds1 -DiskStorageFormat thin -Confirm:$false
 Write-Host -ForegroundColor Yellow "Primary Appliance Imported to vCenter"
+
+Write-Host -ForegroundColor Yellow "Powering on $vmName1"
+$wsoVm | Start-VM -RunAsync | Out-Null
+
+# Need to wait until the system is up and running, which can take a LONG TIME
+# Invote-RestMethod is a PowerShell command that can be used to communicate...
 
 Write-Host -ForegroundColor Yellow "Disconnecting from vCenter..."
 Disconnect-VIServer $vcConn -Confirm:$false
