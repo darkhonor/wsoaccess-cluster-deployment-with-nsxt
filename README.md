@@ -11,6 +11,6 @@ This script assumes you have access to valid licenses for Horizon 8 Advanced, vS
 I would be remiss if I did not give credit where credit is due.  The basis of the scripting is from William Lam's EXCELLENT [VMware vSphere with Kubernetes automation scripts](https://www.virtuallyghetto.com/2020/04/automated-vsphere-7-and-vsphere-with-kubernetes-lab-deployment-script.html).  In addition, I found some good pointers on configuring the vApp from [Raul Cunha's blog](https://raulcunha.com/2021/01/29/how-to-deploy-workspace-one-access-using-powercli/).  
 
 ## Requirements
-Microsoft PowerShell 7.0 or later
-VMware PowerCLI 12.3 or later
+- Microsoft PowerShell 7.0 or later
+- VMware PowerCLI 12.3 or later
 
