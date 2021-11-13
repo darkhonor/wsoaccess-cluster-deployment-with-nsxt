@@ -140,6 +140,7 @@ $OVFConfig.Common.vamitimezone.Value = $wsoTZ
 $OVFConfig.Common.ceip.enabled.Value = $wsoCeip
 $OVFConfig.Common.vami.hostname.Value = $wsoHostname
 $OVFConfig.DeploymentOption.Value = $wsoDepOption
+$OVFConfig.EULAs.Accept.Value = $true
 $OVFConfig.IpAssignment.IpProtocol.Value = $wsoIpProtocol
 $OVFConfig.NetworkMapping.Network_1.Value = $wsoPortGroup
 $OVFConfig.vami.WorkspaceOneAccess.gateway.Value = $wsoGatewayIp
