@@ -2,8 +2,6 @@
 # Website: www.vmhomelab.org
 
 #Requires -PSEdition Core
-#Requires -Modules VMware.PowerCLI
-
 
 # vCenter Server used to deploy the appliances
 $VIserver = "NEED VALUE"
@@ -32,16 +30,13 @@ $wsoDepOption = "xsmall"
 $wsoTZ = "Asia/Tokyo"
 $wsoCeip = $false
 $wsoHostname = "instance1.home.local"
-#$wsoHostnameLb = "instance.home.local"
 $wsoIpProtocol = "IPv4"   # Other option is "IPv6" if that fits your environment
 $wsoPortGroup = "NSX-T Segment"
 $wsoGatewayIp = "<Gateway IP Address>"
 $wsoDomain = "home.local"
 $wsoDnsIp = "<DNS IP Address>"  # Can specify multiple separated by a comma
 $wsoIp = "<Appliance IP Address"
-#$wsoIpLb = "<Appliance Load Balanced IP Address"
 $wsoNetmask = "<Appliance Netmask>"  # Assumes all three appliance in same subnet
-#$wsoNetmaskLb = "<Appliance Load Balanced Netmask>"
 
 ### DO NOT EDIT BELOW THIS LINE ###
 # Validate PowerShell version is correct
@@ -51,6 +46,15 @@ if ( "Core" -ne $PSVersionTable.PSEdition)
     exit
 } else {
     Write-Host -ForegroundColor Yellow "* PowerShell Core Installed: " $PSVersionTable.PSVersion
+}
+
+$psmVersion = ((Get-Module -Name VMware.PowerCLI -ListAvailable).Version).Major
+if ( "12" -ne $psmVersion )
+{
+    Write-Host -ForegroundColor Red "***VMware PowerCLI Module not detected.  Please install before continuing."
+    exit
+} else {
+    Write-Host -ForegroundColor Yellow "* VMware PowerCLI Module Installed: " $psmVersion
 }
 
 # Verify that PowerCLI is installed and available
@@ -121,10 +125,12 @@ if ( $null -eq $cluster )
 if ( $null -eq $ds )
 {
     Write-Host -ForegroundColor Red "***Datastore Not Found in vCenter***"
+    exit
 }
 if ( $null -eq $vmFolder )
 {
     Write-Host -ForegroundColor Red "***VM Folder Not Found in vCenter***"
+    exit
 }
 
 # Configure the vApp Properties
@@ -158,10 +164,16 @@ if ($useContentLibrary)
 } else {
     $wsoVm = Import-VApp -Source $wsoSourceOva -OvfConfiguration $OVFConfig -Name $vmName -VMHost $vmhost -Location $cluster -Datastore $ds -DiskStorageFormat thin -Confirm:$false
 }
-Write-Host -ForegroundColor Yellow "Primary Appliance Created"
 
-Write-Host -ForegroundColor Yellow "Powering on $vmName"
-$wsoVm | Start-VM -RunAsync | Out-Null
+if ( null -ne $wsoVm ) 
+{
+    Write-Host -ForegroundColor Yellow "Primary Appliance Created"
+    Write-Host -ForegroundColor Yellow "Powering on $vmName"
+    $wsoVm | Start-VM -RunAsync | Out-Null
+    
+} else {
+    Write-Host -ForegroundColor Red "Error Creating Primary Appliance"
+}
 
 # Need to wait until the system is up and running, which can take a LONG TIME
 # Invote-RestMethod is a PowerShell command that can be used to communicate...
